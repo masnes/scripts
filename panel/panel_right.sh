@@ -44,6 +44,6 @@ do
   date=$(date +'%a %b %d %H:%M')
 
   echo -n $starter $volume $sep $wifi $sep $cpu $sep $disk $sep $battery $sep $date | tr -d '\n' && echo ""
-  sleep 0.5
+  sleep 3.0
 done
 #ps aux | awk {'sum+=$3;print sum'} | tail -n 1 | tr -d '\n' && echo -n "% CPU | "
