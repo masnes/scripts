@@ -16,4 +16,8 @@ fi
 
 
 pkill -x redshift
-redshift -l 40\.0\:-105\.3 -t 5700\:3300 -b $daybrightness:$nightbrightness &
+if [[ $# -gt 0 ]]; then
+   redshift -l 40\.0\:-105\.3 -t 5700\:3300 -b $daybrightness:$nightbrightness &
+else
+   redshift -l 40\.0\:-105\.3 -t 5700\:3300 &
+fi
