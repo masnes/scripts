@@ -6,6 +6,9 @@ args=("$@")
 daybrightness=1.0
 nightbrightness=0.4
 
+daytemp=5700
+nighttemp=2200
+
 if [[ $1 =~ ^[0-1]\.[0-9]+$ ]]; then
    nightbrightness=$1
 fi
@@ -16,8 +19,8 @@ fi
 
 
 pkill -x redshift
-if [[ $# -gt 0 ]]; then
-   redshift -l 40\.0\:-105\.3 -t 5700\:3300 -b $daybrightness:$nightbrightness &
+if [[ numargs -gt 0 ]]; then
+   redshift -l 40\.0\:-105\.3 -t $daytemp\:$nighttemp -b $daybrightness:$nightbrightness &
 else
-   redshift -l 40\.0\:-105\.3 -t 5700\:3300 &
+   redshift -l 40\.0\:-105\.3 -t $daytemp\:$nighttemp &
 fi

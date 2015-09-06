@@ -33,7 +33,7 @@ do
     cpu=$(mpstat 2 1 | tail -n 2 | head -n 1 | awk '{printf "%5.2f", 100.0 - $13}' && echo -n "%% CPU")
   fi
 
-  disk=$(df -h | head -2 | tail -1 | awk '{print $4}')
+  disk=$(df -h | grep "/dev/sda5" | awk '{print $4}')
 
   #also takes a bit
   let "z=$count % 2"
