@@ -109,7 +109,7 @@ class Feh(object):
 
     @staticmethod
     def set_background():
-        args = ['feh', '--bg-scale', BG_PICTURE_LOCATION]
+        args = ['feh', '--bg-fill', BG_PICTURE_LOCATION]
         print(args)
         call(args)
 
