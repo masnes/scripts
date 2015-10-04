@@ -5,6 +5,7 @@ from os import getenv
 from enum import Enum
 from subprocess import call, Popen, PIPE, DEVNULL
 
+
 class Monitor(Enum):
     LVDS1 = "LVDS1"
     DPI1 = "DPI1"
@@ -12,10 +13,12 @@ class Monitor(Enum):
     VGA1 = "VGA1"
     VIRTUAL1 = "VIRTUAL1"
 
-BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/sol.jpg"
+BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/blood_moon_rising.jpg"
 BASIC_MONITOR = Monitor.LVDS1
-ADDITIONAL_MONITOR_POSSIBILITIES = [Monitor.DPI1, Monitor.HDMI1, Monitor.VGA1, Monitor.VIRTUAL1]
+ADDITIONAL_MONITOR_POSSIBILITIES = [Monitor.DPI1, Monitor.HDMI1, Monitor.VGA1,
+                                    Monitor.VIRTUAL1]
 DESKTOP_NAMES = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
+
 
 class Bspc(object):
     name = 'bspc'
@@ -40,9 +43,11 @@ class Bspc(object):
         args = [cls.name, 'query', '-D']
         print(args)
         desktops_buffer = Popen(args, 1, stdout=PIPE).communicate()[0]
-        desktops = [desktop for desktop in desktops_buffer.decode().split('\n') if len(desktop) > 0]
+        desktops = [desktop for desktop in desktops_buffer.decode().split('\n')
+                    if len(desktop) > 0]
         if partial_or_full_name is not None:
-            desktops = [desktop for desktop in desktops if partial_or_full_name in desktop]
+            desktops = [desktop for desktop in desktops
+                        if partial_or_full_name in desktop]
         return desktops
 
     @classmethod
@@ -51,13 +56,15 @@ class Bspc(object):
         print(args)
         call(args)
 
+
 class Xrandr(object):
     def __init__(self):
         pass
 
     @staticmethod
     def monitor_off(monitor):
-        args = ["xrandr", "--output", monitor.name, "--off", "--right-of", BASIC_MONITOR.name, "--primary"]
+        args = ["xrandr", "--output", monitor.name, "--off", "--right-of",
+                BASIC_MONITOR.name, "--primary"]
         print(args)
         call(args)
 
@@ -70,7 +77,7 @@ class Xrandr(object):
     @staticmethod
     def new_monitor(monitor):
         args = ["xrandr", '--output', monitor.name, '--auto', '--right-of',
-              BASIC_MONITOR.name, '--primary']
+                BASIC_MONITOR.name, '--primary']
         print(args)
         call(args)
 
@@ -80,7 +87,8 @@ class Xrandr(object):
         returns a set of enums of all monitors connected"""
         args = ['xrandr']
         print(args)
-        xrandr_output = Popen(args, 1, stdout=PIPE).communicate()[0].decode().split('\n')
+        process = Popen(args, 1, stdout=PIPE)
+        xrandr_output = process.communicate()[0].decode().split('\n')
         monitors_present = set()
         for line in xrandr_output:
             if len(line.split()) < 2:
@@ -94,6 +102,7 @@ class Xrandr(object):
                 monitors_present.add(monitor)
         return monitors_present
 
+
 class Feh(object):
     def __init__(self):
         pass
@@ -103,6 +112,7 @@ class Feh(object):
         args = ['feh', '--bg-scale', BG_PICTURE_LOCATION]
         print(args)
         call(args)
+
 
 class Panel(object):
     def __init__(self):
@@ -120,6 +130,7 @@ class Panel(object):
         print(run_panel)
         Popen(run_panel, stdout=DEVNULL, stderr=DEVNULL)
 
+
 def setup_just_main_monitor():
     print("Just using main monitor, " + BASIC_MONITOR.name)
     for monitor in ADDITIONAL_MONITOR_POSSIBILITIES:
@@ -136,14 +147,17 @@ def setup_with_two_monitors(second_monitor):
     for desktop_name in Bspc.desktops("Desktop"):
         Bspc.remove_desktop(desktop_name)
 
+
 def finish_up():
     for desktop_name in Bspc.desktops("Desktop"):
         Bspc.remove_desktop(desktop_name)
     Feh.set_background()
     Panel.reset()
 
+
 def set_debug():
     Bspc.name = '/home/masnes/sourcecode/bspwm/bspc'
+
 
 def main():
     try:
