@@ -1,71 +1,54 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
-"""
-USAGE: ./cvim_socket.py
+'''
+USAGE: ./cvim_server.py
 If you want to use native Vim to edit text boxes
 you must be running this script. To begin editing,
-press <C-i> inside a text box. By default, this
-script will spawn a urxvt shell, but this action
-can be changed via the COMMAND variable below.
-"""
+first map the editWithVim (e.g. "imap <C-o> editWithVim") mapping.
+By default, this script will spawn a gvim ("gvim -f"), but this action
+can be changed via the "vimcommand" cVimrc option
+'''
 
-from platform import system
-import http.server
-import subprocess
-import stat
 import os
+import sys
+import shlex
+from json import loads
+import subprocess
+from tempfile import mkstemp
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+PORT = 8001
 
 
-PORT_NUMBER = 8001
-
-if system() == "Windows": # tested on Windows 7 by @Praful
-    TMP_FILE = os.environ['TEMP'] + "\\cvim-tmp"
-    TMP_SCRIPT_FILE = os.environ['TEMP'] + "\\cvim-tmp-script.bat"
-    GVIM_PATH = "" # edit this to the location of gvim.exe
-    SCRIPT_COMMAND = GVIM_PATH + "gvim.exe %1"
-    COMMAND = TMP_SCRIPT_FILE + " {}"
-else: # tested on Arch Linux + urxvt
-    TMP_FILE = "/tmp/cvim-tmp"
-    TMP_SCRIPT_FILE = "/tmp/cvim-tmp-script.sh"
-    SCRIPT_COMMAND = "vim $1"
-    COMMAND = "urxvt -e " + TMP_SCRIPT_FILE + " {}"
+def edit_file(command, content):
+    fd, fn = mkstemp(suffix='.txt', prefix='cvim-', text=True)
+    os.write(fd, content.encode('utf8'))
+    os.close(fd)
+    subprocess.Popen(shlex.split(command) + [fn]).wait()
+    text = None
+    with open(fn, 'r') as f:
+        text = f.read()
+    os.unlink(fn)
+    return text
 
 
-class CVHandler(http.server.BaseHTTPRequestHandler):
-
-    def do_HEAD(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-
+class CvimServer(BaseHTTPRequestHandler):
     def do_POST(self):
+        length = int(self.headers['Content-Length'])
+        content = loads(self.rfile.read(length).decode('utf8'))
+        edit = edit_file(content['command'], content['data'])
         self.send_response(200)
+        self.send_header('Content-Type', 'text/plain')
         self.end_headers()
-        if self.headers["Host"] != "127.0.0.1:" + str(PORT_NUMBER):
-            print("cVim Warning: Connection from outside IP blocked -> " +
-                  self.headers["Host"])
-            return
-        post_body = self.rfile \
-            .read(int(self.headers["Content-Length"])).decode("utf8")
-        with open(TMP_FILE, "w") as tmp_file:
-            tmp_file.write(post_body)
-        proc = subprocess.Popen(COMMAND.format(TMP_FILE).split()).wait()
-        with open(TMP_FILE, "r") as tmp_file:
-            self.wfile.write(bytes(tmp_file.read(), "utf8"))
-        os.remove(TMP_FILE)
+        self.wfile.write(edit.encode('utf8'))
 
 
-if __name__ == '__main__':
-    script = open(TMP_SCRIPT_FILE, "w")
-    script.write(SCRIPT_COMMAND)
-    script.close()
-    script_permissions = os.stat(TMP_SCRIPT_FILE)
-    os.chmod(TMP_SCRIPT_FILE, script_permissions.st_mode | stat.S_IEXEC)
-    try:
-        server_class = http.server.HTTPServer
-        httpd = server_class(('', PORT_NUMBER), CVHandler)
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    os.remove(TMP_SCRIPT_FILE)
-    httpd.server_close()
+def init_server(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
+    server_address = ('127.0.0.1', PORT)
+    httpd = server_class(server_address, CvimServer)
+    httpd.serve_forever()
+
+try:
+    init_server()
+except KeyboardInterrupt:
+    pass
