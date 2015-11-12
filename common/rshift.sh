@@ -14,7 +14,7 @@ daybrightness=1.0
 nightbrightness=0.9
 
 daytemp=5700
-nighttemp=2200
+nighttemp=2600
 
 while true; do
   case "$1" in
