@@ -14,16 +14,13 @@ addTime() {
     fi
     numFields=$(echo $1 | sed -s 's/[^:]//g' | wc -c | bc)
     hours=`echo $1 | cut -d ':' -f 1`
-    echo hours $hours
     minutes=0
     seconds=0
     if [[ $numFields -gt 1 ]]; then
         minutes=`echo $1 | cut -d ':' -f 2`
-        echo minutes $minutes
     fi
     if [[ $numFields -gt 2 ]]; then
         seconds=`echo $1 | cut -d ':' -f 3`
-        echo seconds $seconds
     fi
     date -d "$time + $hours hours $minutes minutes $seconds seconds" $3
 }
