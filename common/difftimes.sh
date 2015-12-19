@@ -8,12 +8,17 @@ usage() {
 
 addTime() {
     if [[ $# -gt 1 ]]; then
-        oldUTC=`date -u -d $2 +%H:%M`
+        time=$2
     else
-        oldUTC=`date -u +%H:%M`
+        time="now"
     fi
-    newUTC=`date -u -d "$oldUTC - $1" +%H:%M`
-    date -d "$newUTC UTC" $3
+    hours=`echo $1 | cut -d ':' -f 1`
+    echo hours $hours
+    minutes=`echo $1 | cut -d ':' -f 2`
+    echo minutes $minutes
+    seconds=`echo $1 | cut -d ':' -f 3`
+    echo seconds $seconds
+    date -d "$time + $hours hours $minutes minutes $seconds seconds" $3
 }
 
 diffTimes() {
