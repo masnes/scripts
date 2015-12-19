@@ -25,6 +25,29 @@ addTime() {
     date -d "$time + $hours hours $minutes minutes $seconds seconds" $3
 }
 
+subtractTime() {
+    if [[ $# -gt 1 ]]; then
+        time=$2
+    else
+        time="now"
+    fi
+    numFields=$(echo $1 | sed -s 's/[^:]//g' | wc -c | bc)
+    hours=`echo $1 | cut -d ':' -f 1`
+    minutes=0
+    seconds=0
+    if [[ $numFields -gt 1 ]]; then
+        minutes=`echo $1 | cut -d ':' -f 2`
+    fi
+    if [[ $numFields -gt 2 ]]; then
+        seconds=`echo $1 | cut -d ':' -f 3`
+    fi
+    if [[ $# -lt 2 ]]; then
+        date -d "$time - $hours hours $minutes minutes $seconds seconds"
+    else
+        date -d "$time - $hours hours $minutes minutes $seconds seconds" +%H:%M
+    fi
+}
+
 diffTimes() {
     now=`date`
     nowUTC=`date -u -d "$now"`
@@ -52,9 +75,11 @@ if   [[ $# -lt 2 ]]; then
     usage
     exit
 fi
-if   [[ $1 == "add" ]]; then
+if   [[ $1 == "add"* ]]; then
     addTime "$2 $3"
-elif [[ $1 == "diff" ]]; then
+elif [[ $1 == "sub"* ]]; then
+    subtractTime $2 $3
+elif [[ $1 == "diff"* ]]; then
     diffTimes $2 $3
 else
     usage
