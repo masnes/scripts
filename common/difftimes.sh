@@ -33,8 +33,8 @@ _hours_minutes_seconds() {
 
 _time_add_subtract() {
     if [[ $# -gt 2 ]]; then
-        new_time=$1
-        base_time=$2
+        new_time=$2
+        base_time=$1
         operator=$3
     elif [[ $# -gt 1 ]]; then
         new_time=$1
