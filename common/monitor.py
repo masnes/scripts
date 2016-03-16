@@ -7,14 +7,14 @@ from subprocess import call, Popen, PIPE, DEVNULL
 
 
 class Monitor(Enum):
-    LVDS1 = "LVDS1"
+    MAIN = "eDP1"
     DPI1 = "DPI1"
-    HDMI1 = "HDMI1"
-    VGA1 = "VGA1"
+    HDMI1 = "DP1"
+    VGA1 = "DP2"
     VIRTUAL1 = "VIRTUAL1"
 
 BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/blood_moon_rising.jpg"
-BASIC_MONITOR = Monitor.LVDS1
+BASIC_MONITOR = Monitor.MAIN
 ADDITIONAL_MONITOR_POSSIBILITIES = [Monitor.DPI1, Monitor.HDMI1, Monitor.VGA1,
                                     Monitor.VIRTUAL1]
 DESKTOP_NAMES = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
@@ -28,13 +28,13 @@ class Bspc(object):
 
     @classmethod
     def add_desktop(cls, name, monitor):
-        args = [cls.name, 'monitor', monitor.name, '-a', name]
+        args = [cls.name, 'monitor', monitor.value, '-a', name]
         print(args)
         call(args)
 
     @classmethod
     def move_desktop(cls, name, to_monitor):
-        args = [cls.name, 'desktop', name, '-m', to_monitor.name]
+        args = [cls.name, 'desktop', name, '-m', to_monitor.value]
         print(args)
         call(args)
 
@@ -63,21 +63,21 @@ class Xrandr(object):
 
     @staticmethod
     def monitor_off(monitor):
-        args = ["xrandr", "--output", monitor.name, "--off", "--right-of",
-                BASIC_MONITOR.name, "--primary"]
+        args = ["xrandr", "--output", monitor.value, "--off", "--right-of",
+                BASIC_MONITOR.value, "--primary"]
         print(args)
         call(args)
 
     @staticmethod
     def set_primary(monitor):
-        args = ["xrandr", "--output", monitor.name, "--primary"]
+        args = ["xrandr", "--output", monitor.value, "--primary"]
         print(args)
         call(args)
 
     @staticmethod
     def new_monitor(monitor):
-        args = ["xrandr", '--output', monitor.name, '--auto', '--right-of',
-                BASIC_MONITOR.name, '--primary']
+        args = ["xrandr", '--output', monitor.value, '--auto', '--right-of',
+                BASIC_MONITOR.value, '--primary']
         print(args)
         call(args)
 
@@ -132,14 +132,14 @@ class Panel(object):
 
 
 def setup_just_main_monitor():
-    print("Just using main monitor, " + BASIC_MONITOR.name)
+    print("Just using main monitor, " + BASIC_MONITOR.value)
     for monitor in ADDITIONAL_MONITOR_POSSIBILITIES:
         Xrandr.monitor_off(monitor)
     Xrandr.set_primary(BASIC_MONITOR)
 
 
 def setup_with_two_monitors(second_monitor):
-    print("Using " + BASIC_MONITOR.name + ", " + second_monitor.name)
+    print("Using " + BASIC_MONITOR.value + ", " + second_monitor.value)
     Xrandr.new_monitor(second_monitor)
     Bspc.add_desktop('DesktopRemoveMe', second_monitor)
     for desktop_name in DESKTOP_NAMES[5:10]:
@@ -166,7 +166,13 @@ def main():
     except IndexError:
         pass
     other_connected_monitors = Xrandr.get_connected_monitors()
+<<<<<<< HEAD
     other_connected_monitors.remove(Monitor.LVDS1)
+=======
+    other_connected_monitors.remove(Monitor.MAIN)
+    other_connected_monitors.remove(Monitor.eDP1)
+    print(other_connected_monitors)
+>>>>>>> to_new
     if len(other_connected_monitors) == 0:
         setup_just_main_monitor()
     else:
