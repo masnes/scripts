@@ -4,7 +4,7 @@ EXT2="VGA1"
 
 function add_output {
    output_name=$1
-   xrandr --output $output_name --auto --right-of $IN --primary $2 $3 $4
+   xrandr --output $output_name --auto --right-of $IN --primary
  }
 
  function disable_output {
