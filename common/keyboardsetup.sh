@@ -5,3 +5,7 @@
 setxkbmap -option caps:none
 xbindkeys -f ~/.xbindkeysrc
 xmodmap ~/.xmodmap
+
+# keycodes with problem
+# l_alt 64
+# l_start 133

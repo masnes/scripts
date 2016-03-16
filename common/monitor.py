@@ -7,14 +7,15 @@ from subprocess import call, Popen, PIPE, DEVNULL
 
 
 class Monitor(Enum):
+    eDP1 = "eDP1"
     LVDS1 = "LVDS1"
     DPI1 = "DPI1"
     HDMI1 = "HDMI1"
     VGA1 = "VGA1"
     VIRTUAL1 = "VIRTUAL1"
 
-BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/blood_moon_rising.jpg"
-BASIC_MONITOR = Monitor.LVDS1
+BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/pale_forest.jpg"
+BASIC_MONITOR = Monitor.eDP1
 ADDITIONAL_MONITOR_POSSIBILITIES = [Monitor.DPI1, Monitor.HDMI1, Monitor.VGA1,
                                     Monitor.VIRTUAL1]
 DESKTOP_NAMES = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
@@ -142,7 +143,7 @@ def setup_with_two_monitors(second_monitor):
     print("Using " + BASIC_MONITOR.name + ", " + second_monitor.name)
     Xrandr.new_monitor(second_monitor)
     Bspc.add_desktop('DesktopRemoveMe', second_monitor)
-    for desktop_name in DESKTOP_NAMES[5:10]:
+    for desktop_name in DESKTOP_NAMES[int(len(DESKTOP_NAMES)/2):len(DESKTOP_NAMES)]:
         Bspc.move_desktop(desktop_name, second_monitor)
     for desktop_name in Bspc.desktops("Desktop"):
         Bspc.remove_desktop(desktop_name)
@@ -166,7 +167,7 @@ def main():
     except IndexError:
         pass
     other_connected_monitors = Xrandr.get_connected_monitors()
-    other_connected_monitors.remove(Monitor.LVDS1)
+    other_connected_monitors.remove(Monitor.eDP1)
     if len(other_connected_monitors) == 0:
         setup_just_main_monitor()
     else:
