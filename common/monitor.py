@@ -7,14 +7,14 @@ from subprocess import call, Popen, PIPE, DEVNULL
 
 
 class Monitor(Enum):
-    LVDS1 = "LVDS1"
+    MAIN = "LVDS1"
     DPI1 = "DPI1"
     HDMI1 = "DP1"
     VGA1 = "DP2"
     VIRTUAL1 = "VIRTUAL1"
 
 BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/blood_moon_rising.jpg"
-BASIC_MONITOR = Monitor.LVDS1
+BASIC_MONITOR = Monitor.MAIN
 ADDITIONAL_MONITOR_POSSIBILITIES = [Monitor.DPI1, Monitor.HDMI1, Monitor.VGA1,
                                     Monitor.VIRTUAL1]
 DESKTOP_NAMES = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
@@ -166,7 +166,7 @@ def main():
     except IndexError:
         pass
     other_connected_monitors = Xrandr.get_connected_monitors()
-    other_connected_monitors.remove(Monitor.LVDS1)
+    other_connected_monitors.remove(Monitor.MAIN)
     other_connected_monitors.remove(Monitor.eDP1)
     print(other_connected_monitors)
     if len(other_connected_monitors) == 0:
