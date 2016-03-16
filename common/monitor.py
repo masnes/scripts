@@ -166,13 +166,7 @@ def main():
     except IndexError:
         pass
     other_connected_monitors = Xrandr.get_connected_monitors()
-<<<<<<< HEAD
-    other_connected_monitors.remove(Monitor.LVDS1)
-=======
     other_connected_monitors.remove(Monitor.MAIN)
-    other_connected_monitors.remove(Monitor.eDP1)
-    print(other_connected_monitors)
->>>>>>> to_new
     if len(other_connected_monitors) == 0:
         setup_just_main_monitor()
     else:
