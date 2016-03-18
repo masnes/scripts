@@ -167,7 +167,6 @@ def main():
         pass
     other_connected_monitors = Xrandr.get_connected_monitors()
     other_connected_monitors.remove(Monitor.MAIN)
-    print(other_connected_monitors)
     if len(other_connected_monitors) == 0:
         setup_just_main_monitor()
     else:
