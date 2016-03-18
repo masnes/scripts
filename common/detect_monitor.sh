@@ -4,7 +4,7 @@ EXT2="DP2"
 
 function add_output {
    output_name=$1
-   xrandr --output $output_name --auto --right-of $IN --primary
+   xrandr --output $output_name --auto --right-of $IN --primary $2 $3 $4
  }
 
  function disable_output {

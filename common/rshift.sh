@@ -7,6 +7,7 @@ args=("$@")
 getopt --test > /dev/null
 if [[ $? != 4 ]]; then
   echo "I’m sorry, `getopt --test` failed in this environment."
+  echo "You must be using the old version of getopt."
   exit 1
 fi
 
@@ -14,8 +15,9 @@ daybrightness=1.0
 nightbrightness=0.9
 
 daytemp=5700
-nighttemp=2600
+nighttemp=1500
 
+rest_of_args=""
 while true; do
   case "$1" in
     -B|--day-brightness)
@@ -38,6 +40,11 @@ while true; do
     -h|--help)
       echo "Usage: (-B|--day-brightness) (-b|--night-brightness) (-T|--day-temp) (-t|--night-temp)"
       exit 0
+      ;;
+    -p|--pass-options)
+      shift
+      rest_of_args=$@
+      break
       ;;
     '')
       break
@@ -62,8 +69,8 @@ fi
 pkill -x redshift
 if [[ numargs -gt 0 ]]; then
   set -x
-  redshift -l 40\.0\:-105\.3 -t $daytemp\:$nighttemp -b $daybrightness:$nightbrightness &
+  redshift -l 40\.0\:-105\.3 -t $daytemp\:$nighttemp -b $daybrightness:$nightbrightness $rest_of_args -o &
 else
   set -x
-   redshift -l 40\.0\:-105\.3 -t $daytemp\:$nighttemp &
+   redshift -l 40\.0\:-105\.3 -t $daytemp\:$nighttemp -o &
 fi

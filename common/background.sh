@@ -1,1 +1,1 @@
-  feh --bg-scale ~/pictures/sol.jpg
+  feh --bg-scale ~/pictures/pale_forest.jpg

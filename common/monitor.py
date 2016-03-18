@@ -13,7 +13,7 @@ class Monitor(Enum):
     VGA1 = "DP2"
     VIRTUAL1 = "VIRTUAL1"
 
-BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/blood_moon_rising.jpg"
+BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/pale_forest.jpg"
 BASIC_MONITOR = Monitor.MAIN
 ADDITIONAL_MONITOR_POSSIBILITIES = [Monitor.DPI1, Monitor.HDMI1, Monitor.VGA1,
                                     Monitor.VIRTUAL1]
@@ -142,7 +142,7 @@ def setup_with_two_monitors(second_monitor):
     print("Using " + BASIC_MONITOR.value + ", " + second_monitor.value)
     Xrandr.new_monitor(second_monitor)
     Bspc.add_desktop('DesktopRemoveMe', second_monitor)
-    for desktop_name in DESKTOP_NAMES[5:10]:
+    for desktop_name in DESKTOP_NAMES[int(len(DESKTOP_NAMES)/2):len(DESKTOP_NAMES)]:
         Bspc.move_desktop(desktop_name, second_monitor)
     for desktop_name in Bspc.desktops("Desktop"):
         Bspc.remove_desktop(desktop_name)
