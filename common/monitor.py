@@ -9,8 +9,8 @@ from subprocess import call, Popen, PIPE, DEVNULL
 class Monitor(Enum):
     MAIN = "LVDS1"
     DPI1 = "DPI1"
-    HDMI1 = "DP1"
-    VGA1 = "DP2"
+    HDMI1 = "HDMI1"
+    VGA1 = "VGA1"
     VIRTUAL1 = "VIRTUAL1"
 
 BG_PICTURE_LOCATION = getenv("HOME") + "/pictures/pale_forest.jpg"
