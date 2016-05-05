@@ -5,7 +5,9 @@ import subprocess
 all_connections = str(subprocess.check_output(["connmanctl", "services"])).split('\\n')
 all_connections = [conn.lstrip("b'").rstrip("'") for conn in all_connections]
 
-connected = [conn for conn in all_connections  if re.match("\*[A]*[RO].*", conn) or re.match("[*A]+\b.*", conn)]
+connected = [conn for conn in all_connections
+             if re.match("\*[A]*[RO].*", conn) or
+             re.match("[*A]+\b.*", conn)]
 
 if len(connected) == 0:
     print("No wifi connected, exiting")
