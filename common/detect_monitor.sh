@@ -1,6 +1,6 @@
-IN="LVDS1"
-EXT="HDMI1"
-EXT2="VGA1"
+IN="eDP1"
+EXT="DP1"
+EXT2="DP2"
 
 function add_output {
    output_name=$1

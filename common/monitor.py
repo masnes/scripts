@@ -7,7 +7,7 @@ from subprocess import call, Popen, PIPE, DEVNULL
 
 
 class Monitor(Enum):
-    MAIN = "LVDS1"
+    MAIN = "eDP1"
     DPI1 = "DPI1"
     HDMI1 = "HDMI1"
     VGA1 = "VGA1"
