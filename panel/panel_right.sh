@@ -29,7 +29,7 @@ do
     if [[ $(cat /proc/net/wireless | wc -l) -eq 2 ]]; then
       wifi="Wifi: D"
     else
-      wifi=$(cat /proc/net/wireless | sed -n 3p | awk '{strength = $3 * 100 / 70; print "Wifi: " strength "%"}' | tr -d '.')
+      wifi=$(cat /proc/net/wireless | sed -n 3p | awk '{strength = $3 * 100 / 70; printf "Wifi: %.0f%%%", strength}' | tr -d '.')
     fi
 
     #takes a while, so set it asynchronously
@@ -45,7 +45,7 @@ do
     disk=$(df -h | grep "/dev/sda3" | awk '{print $4}')
 
     #also takes a bit
-    battery=$(acpi | sed "s|Battery \([0-9]\)|Bat\1|" | sed "s|:\d\d | |" | sed s/Discharging,/D/ | sed s/Charging,/C/ | sed s/Unknown,/U/ | sed s/Full,/F/ | tr "\n" ' ' | sed "s|^[^%]\+\?%|\0,|") # | sed s/\:[0-9]*\ /\ /g | sed s/\ until\ charged// | sed s/\ remaining//)
+    battery=$(acpi | sed "s|Battery \([0-9]\)|Bat|" | sed "s|:\d\d | |" | sed s/Discharging,/D/ | sed s/Charging,/C/ | sed s/Unknown,/U/ | sed s/Full,/F/ | tr "\n" ' ' | sed "s|^[^%]\+\?%|\0,|" | sed s/\:[0-9]*\ /\ /g | sed s/\ until\ charged// | sed s/\ remaining// | tr -d ',')
 
     date=$(date +'%a %b %d %H:%M')
   fi
